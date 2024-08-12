@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="container">
+      <header id="header">
+        <h1 id="main-title">Welcome to My Website</h1>
+        <nav>
+          <ul>
+            <li>
+              <a href="#" id="home-link"><mark>Home</mark></a>
+            </li>
+            <li><a href="#" id="about-link">About</a></li>
+            <li><a href="#" id="contact-link">Contact</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main>
+        <section id="section1">
+          <h2><mark>Section 1</mark></h2>
+          <p id="para1">This is a paragraph in section 1.</p>
+          <div id="nested-div1">
+            <p>Another paragraph in a nested div.</p>
+          </div>
+        </section>
+        <section id="section2">
+          <h2>Section 2</h2>
+          <p id="para2">
+            This is a paragraph in section 2. This is a paragraph in section 2.
+          </p>
+          <div id="nested-div2">
+            <p id="para3">Another paragraph in a nested div.</p>
+          </div>
+        </section>
+      </main>
+      <footer id="footer">
+        <p>&copy; 2024 My Website</p>
+      </footer>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        debugger;
+      });
+    </script>
+
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script
+      type="module"
+      id="escape-string-regexp"
+      src="https://cdn.jsdelivr.net/npm/escape-string-regexp@5.0.0/index.min.js"
+    ></script>
+    <script>
+      this.findScript = function findScript(scriptId) {
+        return () => {
+          return [...document.body.children].find(
+            (x) => x.nodeName === "SCRIPT" && x.id === scriptId
+          );
+        };
+      };
+    </script>
+    <script type="module" src="recursion/highlightText.js"></script>
+  </body>
+</html>
