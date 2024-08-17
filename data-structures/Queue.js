@@ -1,5 +1,9 @@
 export class Queue {
-    data = []
+
+    data = [];
+    constructor(data) {
+        this.data = data;
+    }
 
     push(value) {
         return this.data.push(value)
