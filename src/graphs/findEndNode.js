@@ -31,5 +31,5 @@ export function findEndNode(startId, fromIds, toIds) {
   }
 }
 
-console.log(findEndNode(2, [1, 7, 3, 4, 2, 6, 9], [3, 3, 4, 6, 6, 9, 5]));
-console.log(findEndNode(9, from, to));
+// console.log(findEndNode(2, [1, 7, 3, 4, 2, 6, 9], [3, 3, 4, 6, 6, 9, 5]));
+// console.log(findEndNode(9, from, to));
