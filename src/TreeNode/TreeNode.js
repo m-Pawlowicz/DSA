@@ -7,6 +7,26 @@ export class TreeNode {
     right?.setParent(this);
   }
 
+  /**
+   * 
+   * @returns balance factor, also called a skew of a node
+   */
+  getBalanceFactor() {
+    if(!this.right && !this.left) {
+      return 0
+    }
+
+    if(!this.right) {
+      return -this.left.height
+    }
+
+    if(!this.left) {
+      return this.right.height;
+    }
+
+    return this.right?.height - this.left?.height;
+  }
+
   setParent(parent) {
     this.parent = parent;
   }

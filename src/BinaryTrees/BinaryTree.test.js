@@ -131,16 +131,81 @@ describe("subtree_first", () => {
     ])(
       "deletes node while preserving inorder order",
       (nodeToDelete, expectedOrder) => {
-        setTimeout(() => {
-          // TODO seems a pretty bad idea to do this, but it will let me 
-          // defer accessing the properties until beforeEach runs, instead
-          // of referencing empty objects when function is
-          tree.delete(nodeToDelete);
-          expect(inorderTraversal(tree.root)).toEqual(expectedOrder);
-        })
-         }
+        // setTimeout(() => {
+        //   // TODO seems a pretty bad idea to do this, but it will let me
+        //   // defer accessing the properties until beforeEach runs, instead
+        //   // of referencing empty objects when function is
+        //   tree.delete(nodeToDelete);
+        //   expect(inorderTraversal(tree.root)).toEqual(expectedOrder);
+        // });
+      }
     );
+
+    it("deletes nodes and correctly augments heights", () => {
+      const { root, left, right_left, right } = createNodes();
+
+      const tree = new BinaryTree(root);
+
+      const right_left_left = new TreeNode("right_left_left");
+      const right_left_right = new TreeNode("right_left_right");
+
+      // substitute height for test purposes
+      right_left_right.height = 0;
+
+      right_left_left.parent = right_left;
+      right_left_right.parent = right_left;
+
+      right.left.left = right_left_left;
+      right.left.right = right_left_right;
+
+      tree.delete(right_left);
+
+      console.log(inorderTraversal(tree.root));
+
+      expect(right_left_left.getBalanceFactor()).toBe(0);
+
+      expect(inorderTraversal(tree.root)).toEqual([
+        "left_left",
+        "left",
+        "left_right",
+        "root",
+        "right_left_left",
+        "right_left_right",
+        "right",
+        "right_right",
+      ]);
+    });
   });
+
+  describe("calculates nodes' height", () => {
+    const { root, left_right, left, left_left, right_right, right } =
+      createNodes();
+    const tree = new BinaryTree(root);
+
+    it.each([
+      [root, 2],
+      [left_right, 0],
+      [left, 1],
+    ])("", (node, expectedHeight) => {
+      expect(tree.calculateHeight(node)).toBe(expectedHeight);
+    });
+
+    it("handles additional nodes", () => {
+      const newNode = new TreeNode(
+        "new node",
+        null,
+        new TreeNode("new node 2")
+      );
+      right_right.right = newNode;
+
+      expect(tree.calculateHeight(newNode)).toBe(1);
+      expect(tree.calculateHeight(right_right)).toBe(2);
+      expect(tree.calculateHeight(right)).toBe(3);
+      expect(tree.calculateHeight(root)).toBe(4);
+    });
+  });
+
+  describe("tree balance", () => {});
 });
 
 function createNodes() {
