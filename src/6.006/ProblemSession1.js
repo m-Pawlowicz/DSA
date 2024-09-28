@@ -120,23 +120,6 @@ class LinkedList {
     };
   }
 
-  swapNodes(a, b) {
-    const { val, next, prev } = a;
-    a.val = b.val;
-    a.next = b.next;
-    a.prev = b.prev;
-    b.val = val;
-    b.next = next;
-    b.prev = prev;
-  }
-
-  reverse(currentHead = this.head, currentTail = this.tail, times = 0) {
-    if (times > Math.floor(this.size / 2)) {
-      return;
-    }
-    this.swapNodes(currentHead, currentTail);
-    this.reverse(currentHead.next, currentTail.prev);
-  }
 }
 
 const ll = new LinkedList(["a", "b", "c", "d"]);
