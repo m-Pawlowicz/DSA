@@ -82,10 +82,9 @@ shiftKElements(sqnceArray, 3);
 shiftKElementsRecursively(sqnceArray, 3);
 
 class LLNode {
-  constructor(value, next, prev) {
+  constructor(value, next) {
     this.value = value;
     this.next = next;
-    this.prev = prev;
   }
 }
 
@@ -94,42 +93,20 @@ class LinkedList {
   constructor(...items) {
     this.size = 0;
     if (items && items.length) {
-      this.pushItems(items.flat());
+      const head = this.pushItems(items.flat());
+      // assign head node only after it has all references to next nodes
+      this.head = head;
     }
   }
 
-  pushItems(items, prev = null) {
-
-    function _pushItems(items, prev = null) {
-      const currentItem = items[0];
-
-      if (!currentItem) {
-        return null;
-      }
-  
-      const currentNode = new LLNode(currentItem, null, prev);
-  
-      if (items.length === 1) {
-        this.tail = currentNode;
-      }
-  
-      this.size++;
-  
-      return {
-        ...currentNode,
-        next: _pushItems(items.slice(1), currentNode),
-      };
-
-
-    }
-    
+  pushItems(items) {
     const currentItem = items[0];
 
     if (!currentItem) {
       return null;
     }
 
-    const currentNode = new LLNode(currentItem, null, prev);
+    const currentNode = new LLNode(currentItem, null);
 
     if (items.length === 1) {
       this.tail = currentNode;
@@ -139,7 +116,7 @@ class LinkedList {
 
     return {
       ...currentNode,
-      next: this.pushItems(items.slice(1), currentNode),
+      next: this.pushItems(items.slice(1)),
     };
   }
 
