@@ -82,37 +82,86 @@ shiftKElements(sqnceArray, 3);
 shiftKElementsRecursively(sqnceArray, 3);
 
 class LLNode {
-  constructor(value, next) {
+  constructor(value, next, prev) {
     this.value = value;
-    if (next) {
-      this.next = next;
-    }
-  }
-
-  set next(nextNode) {
-    if (!(nextNode instanceof LLNode)) {
-      throw new Error("next has to be instance of node class");
-    }
-
-    Object.defineProperty(this, "next", { writable: true, value: nextNode });
+    this.next = next;
+    this.prev = prev;
   }
 }
 
 // problem 4
 class LinkedList {
-  constructor(head) {
-    if (!head instanceof LLNode) {
-      throw new Error("head has to be instance of node class");
+  constructor(...items) {
+    this.size = 0;
+    if (items && items.length) {
+      this.pushItems(items.flat());
     }
-    this.head = head;
+  }
+
+  pushItems(items, prev = null) {
+
+    function _pushItems(items, prev = null) {
+      const currentItem = items[0];
+
+      if (!currentItem) {
+        return null;
+      }
+  
+      const currentNode = new LLNode(currentItem, null, prev);
+  
+      if (items.length === 1) {
+        this.tail = currentNode;
+      }
+  
+      this.size++;
+  
+      return {
+        ...currentNode,
+        next: _pushItems(items.slice(1), currentNode),
+      };
+
+
+    }
+    
+    const currentItem = items[0];
+
+    if (!currentItem) {
+      return null;
+    }
+
+    const currentNode = new LLNode(currentItem, null, prev);
+
+    if (items.length === 1) {
+      this.tail = currentNode;
+    }
+
+    this.size++;
+
+    return {
+      ...currentNode,
+      next: this.pushItems(items.slice(1), currentNode),
+    };
+  }
+
+  swapNodes(a, b) {
+    const { val, next, prev } = a;
+    a.val = b.val;
+    a.next = b.next;
+    a.prev = b.prev;
+    b.val = val;
+    b.next = next;
+    b.prev = prev;
+  }
+
+  reverse(currentHead = this.head, currentTail = this.tail, times = 0) {
+    if (times > Math.floor(this.size / 2)) {
+      return;
+    }
+    this.swapNodes(currentHead, currentTail);
+    this.reverse(currentHead.next, currentTail.prev);
   }
 }
 
-const head = new LLNode(
-  "head",
-  new LLNode("head + 1", new LLNode("head + 2", new LLNode("head + 3")))
-);
+const ll = new LinkedList(["a", "b", "c", "d"]);
 
-const ll = new LinkedList(head)
-
-console.log(new String(ll))
+console.log(ll);

@@ -3,28 +3,43 @@
  * @param {number} target
  * @return {boolean}
  */
-const searchMatrix = function(matrix, target) {
+export function searchMatrix(matrix, target) {
     // if last element in row is smaller than target;
     // then target is NOT in any row below the current one;
 
     // if first element in row is bigger than target;
     // then target is not present in the matrix
 
-    for(let i =0; i < matrix.length; i ++) {
-        const currentRow = matrix.at(i);
+    // create a binary search approach for searching in the matrix somehow
+    
 
-        if(currentRow.at(0) > target) {
-            return false;
-        }
 
-        if(currentRow.at(-1) < target ) {
-            continue;
-        }
+    function search(matrix, l = 0, r = matrix.length - 1) {
+       if(!(l <= r)) {
+        return false;
+       }
 
-        if(searchRow(currentRow)) {
+        const midIndex = Math.floor((l + r) / 2)
+        const midRow = matrix[midIndex];
+
+        const wasFound = searchRow(midRow);
+
+        if(wasFound) {
             return true;
         }
+
+        if(midRow.at(0) > target) {
+            return search(matrix, l, midIndex - 1)
+        }
+
+        if(midRow.at(-1) < target) {
+            return search(matrix, midIndex + 1, r);
+        }
+
+        return false;
     }
+
+
     
     function searchRow(row, l = 0, r = row.length - 1) {
        if(!(l <= r)) {
@@ -45,7 +60,5 @@ const searchMatrix = function(matrix, target) {
         return true
     }
 
-    return false;
+    return search(matrix);
 };
-
-export {searchMatrix}
