@@ -10,32 +10,29 @@ head.next.next.next = new ListNode(4);
 head.next.next.next.next = new ListNode(5);
 
 var removeNthFromEnd = function (head, n) {
-  if (!head) {
+  if (!head.next && n > 0) {
     return null;
   }
 
-  if (!head.next) {
-    return null;
+  let initialHead = head;
+  const visited = [];
+  while (head) {
+    visited.push(head);
+    head = head.next;
   }
 
-  function traverseList(head, n, visited) {
-    if (!head) {
-      return 1;
-    }
+  const theOneToRemoveIndex = visited.length - n;
+  const beforeTheOneToRemove = visited[theOneToRemoveIndex - 1];
+  const theOneToRemove = visited[theOneToRemoveIndex];
+  const afterTheOneToRemove = visited[theOneToRemoveIndex + 1] ?? null;
 
-    const result = 1 + traverseList(head?.next?.next, n, head);
-
-    if (result === n) {
-      morePrevNode.next = head;
-      return;
-    }
-
-    return result;
+  if (!beforeTheOneToRemove) {
+    return afterTheOneToRemove;
   }
 
-  traverseList(head, n, null);
+  beforeTheOneToRemove.next = afterTheOneToRemove;
 
-  return head;
+  return initialHead;
 };
 
 let head2 = new ListNode(1);
@@ -43,4 +40,6 @@ head2.next = new ListNode(2);
 
 // removeNthFromEnd(head, 2);
 
-removeNthFromEnd(head2, 2);
+const returnedHead = removeNthFromEnd(head2, 1);
+// const returnedHead = removeNthFromEnd(head2, 2);
+console.log(returnedHead);
