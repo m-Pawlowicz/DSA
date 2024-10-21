@@ -21,7 +21,7 @@ LRUCache.prototype.get = function (key) {
     return -1;
   }
 
-  this.moveToTail(savedNode);
+  this.shiftSavedNode(savedNode);
 
   return savedNode.value;
 };
@@ -34,44 +34,35 @@ LRUCache.prototype.get = function (key) {
 LRUCache.prototype.put = function (key, value) {
   let savedNode = this.cache[key];
 
-  // update value at key
+  // case1: entry is present in the list
   if (savedNode) {
     savedNode.value = value;
-
-    //remove saved node from it's place in the middle of the list
-    if (savedNode !== this.head) {
-      savedNode.prev.next = savedNode.next;
-    }
-
-    if (savedNode === this.head && this.head.next === this.tail) {
-      const saveTail = this.tail;
-      this.tail = this.head;
-      this.tail.prev = saveTail.prev;
-      saveTail.next = this.head.next;
-      this.head = saveTail;
-      this.head.prev = null;
-    }
-
-    // override tail
-    this.tail.next = savedNode;
-    savedNode.prev = this.tail;
-    this.tail = savedNode;
-
+    this.shiftSavedNode(savedNode);
+    // end of case 1
     return;
   }
 
+  // case2: entry is not present in the list
   if (!this.capacity) {
     // first node needs to be removed since it's least recently used
     const nodeToRemove = this.head;
     delete this.cache[nodeToRemove.key];
 
+    // increase capacity since we removed a node from cache
+    this.capacity++;
+
+    // handle list operations
+
     // override head
     this.head = this.head.next;
-    if (this.head) {
-      // it will be undefined if list was of size 1
+
+    if (!this.head) {
+      // if list was of size 1 then head is null now, also set tail to null
+      this.tail = null;
+    } else {
+      // if list size was not 1 then clear new head prev reference
       this.head.prev = null;
     }
-    this.capacity++;
   }
 
   const newNode = {
@@ -80,43 +71,68 @@ LRUCache.prototype.put = function (key, value) {
   };
 
   if (!this.head) {
+    // if list was empty set new head and tail
     newNode.next = null;
+    newNode.prev = null;
     this.head = newNode;
+    this.tail = newNode;
+  } else {
+    // otherwise add new tail
+    newNode.next = null;
+    newNode.prev = this.tail;
+    this.tail.next = newNode;
+    this.tail = this.tail.next;
   }
-
-  this.overwriteTail(newNode);
 
   this.cache[key] = newNode;
   this.capacity--;
 };
 
-LRUCache.prototype.moveToTail = function (savedNode) {
+LRUCache.prototype.shiftSavedNode = function (savedNode) {
+  // case 1.1
+  // saved node is tail
+  // and this rules out the condition below, since if list is size one and saved node is there it is also the tail
+
+  // NOT NEEDED: saved node is head and list size is 1
   if (savedNode === this.tail) {
-    // if found node is latest in the cache no need to do anything
+    // do nothing
     return;
   }
 
-  if (savedNode === this.head && this.head?.next) {
+  // case 1.2
+  // saved node is head and is NOT tail and list is at least 2 items long
+
+  if (savedNode === this.head) {
+    const saveTail = this.tail;
+    // move head to the end
+    this.tail.next = this.head;
+    // move head to next pointer
     this.head = this.head.next;
-    // not sure if this is necessary??
-    this.head.prev = null;
-  } else {
-    savedNode.prev.next = savedNode.next;
+    // make previous head the new tail
+    this.tail = this.tail.next;
+    // make new tail (old head) prev the old tail
+    this.tail.prev = saveTail;
+
+    return;
   }
 
-  this.overwriteTail(savedNode);
-};
+  // case 1.3
+  // saved node is NOT head and is NOT tail and  list is at least 2 items long
 
-LRUCache.prototype.overwriteTail = function (newTailNode) {
-  if (!this.tail) {
-    newTailNode.next = null;
-    this.tail = newTailNode;
-  }
+  const saveTail = this.tail;
+  // re-point prev node to next node
+  savedNode.prev.next = savedNode.next;
+  // clear next reference
+  savedNode.next = null;
 
-  newTailNode.prev = this.tail;
-  this.tail.next = newTailNode;
-  this.tail = newTailNode;
-  this.tail.next = null;
+  // make saved node current tail next reference
+  this.tail.next = savedNode;
+
+  // override previous tail with savedNode
+  this.tail = this.tail.next;
+
+  // set new tail prev to old tail
+  this.tail.prev = saveTail;
 };
 
 /**
