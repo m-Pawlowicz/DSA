@@ -77,3 +77,9 @@ LRUCache.prototype.put = function (key, value) {
   this.cache[key] = newNode;
   this.capacity--;
 };
+
+const lruCache = new LRUCache(1);
+lruCache.put(1, 1);
+lruCache.put(1, 2);
+lruCache.put(2, 1);
+lruCache.get(2);
